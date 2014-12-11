@@ -1,7 +1,5 @@
 package ca.mcgill.cs.comp303.rummy.model;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -167,7 +165,14 @@ public class Hand
 	 */
 	public int score()
 	{
-		return getUnmatchedCards().size();
+		int score = 0;
+		
+		for (Card card : getUnmatchedCards())
+		{
+			score += card.pointValue(); // +1 since ordinals start at zero
+		}
+		
+		return score;
 	}
 	
 	/**
@@ -333,6 +338,9 @@ public class Hand
 	 */
 	public void autoMatch()
 	{
+		// empty the matched sets
+		aMatchedSets.clear();
+
 		// get all the possible matches that can be made by the cards in the hand
 		HashSet<HashSet<Card>> allMatches = getAllPossibleMatches(aHand);
 		
@@ -349,15 +357,12 @@ public class Hand
 			if (first.getRank() == second.getRank())
 			{
 				// match is a group
-				CardSet group = new CardSet(match, SetType.GROUP);
-				// clear, then add to hand's matched sets
-				aMatchedSets.add(group);
+				aMatchedSets.add(new CardSet(match, SetType.GROUP));
 			}
 			else
 			{
 				// match is a run
-				CardSet run = new CardSet(match, SetType.RUN);
-				aMatchedSets.add(run);
+				aMatchedSets.add(new CardSet(match, SetType.RUN));
 			}
 		}
 	}
@@ -368,7 +373,7 @@ public class Hand
 	 * @pre pCards != null
 	 * @return A HashSet of matched Card HashSets
 	 */
-	private HashSet<HashSet<Card>> getAllPossibleMatches(HashSet<Card> pCards)
+	public HashSet<HashSet<Card>> getAllPossibleMatches(HashSet<Card> pCards)
 	{
 		HashSet<HashSet<Card>> matched = new HashSet<HashSet<Card>>();
 		
@@ -410,10 +415,10 @@ public class Hand
 	 * @param pRemainingMatches The set of card sets to arrange into optimal groups and runs
 	 * @return The set of optimal groups/runs
 	 */
-	private HashSet<HashSet<Card>> optimalMatches(HashSet<HashSet<Card>> pRemainingMatches)
+	public HashSet<HashSet<Card>> optimalMatches(HashSet<HashSet<Card>> pRemainingMatches)
 	{
 		HashSet<HashSet<Card>> optimal = new HashSet<HashSet<Card>>();;
-		int optimalPoints = aHand.size();
+		int pointValue = 0;
 		
 		// for each match, get its compatible matches
 		for (HashSet<Card> match : pRemainingMatches)
@@ -446,17 +451,20 @@ public class Hand
 			optimalCompatible.add(match);
 			
 			// calculate the points associated with this setup
-			int currentPoints = aHand.size();
+			int currentPoints = 0;					
 			for (HashSet<Card> matched : optimalCompatible)
 			{
-				currentPoints -= matched.size();
+				for (Card card : matched)
+				{
+					currentPoints += card.pointValue(); // +1 since ordinal has zero start
+				}
 			}
 			
 			// compare to last iteration and keep this arrangement if it results in less points (better), or equal points w/ less sets
-			if ((currentPoints < optimalPoints) || ((currentPoints == optimalPoints) && (optimalCompatible.size() < optimal.size())))
+			if ((currentPoints > pointValue) || ((currentPoints == pointValue) && (optimalCompatible.size() < optimal.size())))
 			{
 				optimal = new HashSet<HashSet<Card>>(optimalCompatible);
-				optimalPoints = currentPoints;
+				pointValue = currentPoints;
 			}
 		}
 		

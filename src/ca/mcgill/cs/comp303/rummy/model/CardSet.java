@@ -1,5 +1,6 @@
 package ca.mcgill.cs.comp303.rummy.model;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -67,5 +68,10 @@ public class CardSet implements ICardSet
 	{
 		return aSetType.compareTo(SetType.RUN) == 0;
 	}
-
+	
+	@Override
+	public String toString()
+	{
+		return aCardSet.toString();
+	}
 }

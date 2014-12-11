@@ -103,4 +103,20 @@ public final class Card implements Comparable<Card>
 	{
 		return this.getSuit().ordinal()*Rank.values().length + this.getRank().ordinal();
 	}
+	
+	public int pointValue()
+	{
+		int ordinal;
+		
+		if (aRank.ordinal() > Rank.TEN.ordinal())
+		{
+			ordinal = Rank.TEN.ordinal();
+		}
+		else
+		{
+			ordinal = aRank.ordinal();
+		}
+		
+		return ordinal + 1; // +1 since ACE is ordinal 0, meaning it's offset by 1
+	}
 }
