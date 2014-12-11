@@ -1,4 +1,4 @@
-Gin-Rummy-Card-Game
+Gin Rummy Card Game
 ===================
 
 Based on the rules found here:
