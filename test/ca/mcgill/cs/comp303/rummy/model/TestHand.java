@@ -70,41 +70,41 @@ public class TestHand
 //		
 //		assertEquals(4, aHand.getUnmatchedCards().size());
 //	}
-	@Test
-	public void testGetAllPossible()
-	{
-		Hand lHand = new Hand();
-        lHand.add( AllCards.CAS );
-        lHand.add( AllCards.C2S );
-        lHand.add( AllCards.C3S );
-        lHand.add( AllCards.C4S );
-        lHand.add( AllCards.C4D );
-        lHand.add( AllCards.C4C );
-        lHand.add( AllCards.C2H );
-        lHand.add( AllCards.C3H );
-        lHand.add( AllCards.C4H );
-        lHand.add( AllCards.C2D );
-        HashSet<HashSet<Card>> all = lHand.getAllPossibleMatches(lHand.getUnmatchedCards());
-        assertEquals(10, all.size());
-	}
-	
-	@Test
-	public void testOptimal()
-	{
-		Hand lHand = new Hand();
-        lHand.add( AllCards.CAS );
-        lHand.add( AllCards.C2S );
-        lHand.add( AllCards.C3S );
-        lHand.add( AllCards.C4S );
-        lHand.add( AllCards.C4D );
-        lHand.add( AllCards.C4C );
-        lHand.add( AllCards.C2H );
-        lHand.add( AllCards.C3H );
-        lHand.add( AllCards.C4H );
-        lHand.add( AllCards.C2D );
-        HashSet<HashSet<Card>> all = lHand.getAllPossibleMatches(lHand.getUnmatchedCards());
-        HashSet<HashSet<Card>> optimal = lHand.optimalMatches(all);
-        lHand.autoMatch();
-        System.out.println(lHand.getMatchedSets());
-	}
+//	@Test
+//	public void testGetAllPossible()
+//	{
+//		Hand lHand = new Hand();
+//        lHand.add( AllCards.CAS );
+//        lHand.add( AllCards.C2S );
+//        lHand.add( AllCards.C3S );
+//        lHand.add( AllCards.C4S );
+//        lHand.add( AllCards.C4D );
+//        lHand.add( AllCards.C4C );
+//        lHand.add( AllCards.C2H );
+//        lHand.add( AllCards.C3H );
+//        lHand.add( AllCards.C4H );
+//        lHand.add( AllCards.C2D );
+//        HashSet<HashSet<Card>> all = lHand.getAllPossibleMatches(lHand.getUnmatchedCards());
+//        assertEquals(10, all.size());
+//	}
+//	
+//	@Test
+//	public void testOptimal()
+//	{
+//		Hand lHand = new Hand();
+//        lHand.add( AllCards.CAS );
+//        lHand.add( AllCards.C2S );
+//        lHand.add( AllCards.C3S );
+//        lHand.add( AllCards.C4S );
+//        lHand.add( AllCards.C4D );
+//        lHand.add( AllCards.C4C );
+//        lHand.add( AllCards.C2H );
+//        lHand.add( AllCards.C3H );
+//        lHand.add( AllCards.C4H );
+//        lHand.add( AllCards.C2D );
+//        HashSet<HashSet<Card>> all = lHand.getAllPossibleMatches(lHand.getUnmatchedCards());
+//        HashSet<HashSet<Card>> optimal = lHand.optimalMatches(all);
+//        lHand.autoMatch();
+//        System.out.println(lHand.getMatchedSets());
+//	}
 }

@@ -2,6 +2,7 @@ package ca.mcgill.cs.comp303.rummy.model;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import ca.mcgill.cs.comp303.rummy.model.Card.Rank;
 import ca.mcgill.cs.comp303.rummy.model.Card.Suit;
@@ -38,7 +39,7 @@ public class Hand
 	 * @throws HandException if the card is already in the hand.
 	 * @pre pCard != null
 	 */
-	public void add( Card pCard ) throws HandException
+	public void add( Card pCard )
 	{		
 		if (this.contains(pCard)) // throw the exceptions
 		{
@@ -181,7 +182,7 @@ public class Hand
 	 * @pre pCards != null
 	 * @return <b>true</b> if <b>pCards</b> makes a group, <b>false</b> otherwise
 	 */
-	private boolean groupExists( HashSet<Card> pCards )
+	private boolean groupExists( Set<Card> pCards )
 	{
 		if (pCards.size() < MIN_MATCHED_SIZE)
 		{
@@ -236,7 +237,7 @@ public class Hand
 	 * @return <b>true</b> if <b>pCards</b> makes a run, <b>false</b> otherwise
 	 * 
 	 */
-	private boolean runExists( HashSet<Card> pCards)
+	private boolean runExists( Set<Card> pCards)
 	{
 		int numCards = pCards.size();
 		
@@ -299,7 +300,7 @@ public class Hand
 	 * @param pCards The cards to make the group from
 	 * @throws HandException If <b>pCards</b> does not make a valid group
 	 */
-	public void createGroup( HashSet<Card> pCards ) throws HandException
+	public void createGroup( Set<Card> pCards )
 	{		
 		HandException invalidGroupException = new HandException("The cards don't construct a valid group.");
 		
@@ -318,7 +319,7 @@ public class Hand
 	 * @param pCards The cards to make the run from
 	 * @throws HandException If <b>pCards</b> does not make a valid run
 	 */
-	public void createRun( HashSet<Card> pCards ) throws HandException
+	public void createRun( HashSet<Card> pCards ) 
 	{
 		HandException invalidRunException = new HandException("The cards don't construct a valid run.");
 				
@@ -342,12 +343,12 @@ public class Hand
 		aMatchedSets.clear();
 
 		// get all the possible matches that can be made by the cards in the hand
-		HashSet<HashSet<Card>> allMatches = getAllPossibleMatches(aHand);
+		Set<Set<Card>> allMatches = getAllPossibleMatches(aHand);
 		
 		// find the optimal solution
-		HashSet<HashSet<Card>> optimal = optimalMatches(allMatches);		
+		Set<Set<Card>> optimal = optimalMatches(allMatches);		
 		
-		for (HashSet<Card> match : optimal)
+		for (Set<Card> match : optimal)
 		{
 			// convert each optimal match to its corresponding CardSet
 			Iterator<Card> iterator = match.iterator();
@@ -371,24 +372,24 @@ public class Hand
 	 * Calculates all the possible matches that can be made from the cards in <b>pCards</b>
 	 * @param pCards The cards to make the matches from
 	 * @pre pCards != null
-	 * @return A HashSet of matched Card HashSets
+	 * @return A HashSet of matched Card HashSetState
 	 */
-	public HashSet<HashSet<Card>> getAllPossibleMatches(HashSet<Card> pCards)
+	private Set<Set<Card>> getAllPossibleMatches(Set<Card> pCards)
 	{
-		HashSet<HashSet<Card>> matched = new HashSet<HashSet<Card>>();
+		Set<Set<Card>> matched = new HashSet<Set<Card>>();
 		
 		if (pCards.size() > MIN_MATCHED_SIZE)
 		{
 			for (Card card : pCards)
 			{
 				// make a set from all the cards except the current card being looked at
-				HashSet<Card> complement = new HashSet<Card>(pCards);
+				Set<Card> complement = new HashSet<Card>(pCards);
 				complement.remove(card);
 				
 				// recursive call to get all the possible matches of the set without the card
-				HashSet<HashSet<Card>> complementMatches = getAllPossibleMatches(complement);
+				Set<Set<Card>> complementMatches = getAllPossibleMatches(complement);
 				
-				for (HashSet<Card> compMatch : complementMatches)
+				for (Set<Card> compMatch : complementMatches)
 				{
 					if (runExists(compMatch) || groupExists(compMatch))
 					{
@@ -415,18 +416,18 @@ public class Hand
 	 * @param pRemainingMatches The set of card sets to arrange into optimal groups and runs
 	 * @return The set of optimal groups/runs
 	 */
-	public HashSet<HashSet<Card>> optimalMatches(HashSet<HashSet<Card>> pRemainingMatches)
+	private Set<Set<Card>> optimalMatches(Set<Set<Card>> pRemainingMatches)
 	{
-		HashSet<HashSet<Card>> optimal = new HashSet<HashSet<Card>>();;
+		Set<Set<Card>> optimal = new HashSet<Set<Card>>();;
 		int pointValue = 0;
 		
 		// for each match, get its compatible matches
-		for (HashSet<Card> match : pRemainingMatches)
+		for (Set<Card> match : pRemainingMatches)
 		{
-			HashSet<HashSet<Card>> compatible = new HashSet<HashSet<Card>>();
+			Set<Set<Card>> compatible = new HashSet<Set<Card>>();
 			
 			// find the compatible matches
-			for (HashSet<Card> potentialCompatible : pRemainingMatches)
+			for (Set<Card> potentialCompatible : pRemainingMatches)
 			{
 				boolean isCompatible = true;
 				
@@ -445,14 +446,14 @@ public class Hand
 				}
 			}
 			
-			HashSet<HashSet<Card>> optimalCompatible = optimalMatches(compatible);
+			Set<Set<Card>> optimalCompatible = optimalMatches(compatible);
 			
 			// add the current match to create the full set of matches
 			optimalCompatible.add(match);
 			
 			// calculate the points associated with this setup
 			int currentPoints = 0;					
-			for (HashSet<Card> matched : optimalCompatible)
+			for (Set<Card> matched : optimalCompatible)
 			{
 				for (Card card : matched)
 				{
@@ -463,7 +464,7 @@ public class Hand
 			// compare to last iteration and keep this arrangement if it results in less points (better), or equal points w/ less sets
 			if ((currentPoints > pointValue) || ((currentPoints == pointValue) && (optimalCompatible.size() < optimal.size())))
 			{
-				optimal = new HashSet<HashSet<Card>>(optimalCompatible);
+				optimal = new HashSet<Set<Card>>(optimalCompatible);
 				pointValue = currentPoints;
 			}
 		}
